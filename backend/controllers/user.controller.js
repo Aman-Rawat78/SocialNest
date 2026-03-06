@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
+import { Post } from "../models/post.model.js";
 
 export const register = async (req, res) => {
   try {
@@ -57,23 +58,33 @@ export const login = async (req, res) => {
         .json({ message: "Incorrect email or password", success: false });
     }
 
-    const token = await jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: "1d",
-    });
+    const token =  jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {  expiresIn: "1d", });
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "strict",
       maxAge: 1 * 24 * 60 * 60 * 1000,
     });
 
+    //populate each post if in the posts arrays
+    const populatedPosts = await Promise.all(
+      user.posts.map(async (postId) => {
+        const post = await Post.findById(postId);
+        if(post.author.equals(user._id)){
+          return post;
+        }
+        return null;
+      })
+    ).filter(Boolean);  //removes all nulls
+
     const userWithoutPassword = await User.findOne({ email }).select(
       "-password",
     );
+    const userData = userWithoutPassword.toObject();
 
     return res.status(200).json({
       message: `Welcome back ${user.username}`,
       success: true,
-      user: userWithoutPassword,
+      user: {...userData, posts: populatedPosts},
     });
   } catch (error) {
     console.log(error);
