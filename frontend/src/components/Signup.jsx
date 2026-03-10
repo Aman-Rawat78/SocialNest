@@ -1,0 +1,146 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+
+import axios from "axios";
+import { toast } from "sonner";
+import { Link, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+
+export default function Signup({ ...props }) {
+   const navigate =useNavigate();
+  const [loading, setloading] = useState(false)
+  const [input, setInput] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setloading(true);
+    console.log(input);
+    console.log("Signup form submitted");
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/v1/user/register",
+        input,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        },
+      );
+    
+      if(res.data.success){
+        navigate("/login")
+        setInput({
+          username: "",
+          email: "",
+          password: "",
+        })
+        console.log("Signup successful");
+        toast.success(res.data.message , { position: "top-center" });
+      } else {
+        toast.error(res.data.message, { position: "top-center" });
+      }
+    } catch (error) {
+      toast.error(error.response.data.message, { position: "top-center" });
+    }finally{
+      setloading(false);
+        }
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <Card className="w-full max-w-md shadow-lg " {...props}>
+        <CardHeader>
+          <CardTitle>Create an account</CardTitle>
+          <CardDescription>
+            Enter your information below to create your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSignup}>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                  value={input.username}
+                  onChange={(e) =>
+                    setInput({ ...input, username: e.target.value })
+                  }
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  value={input.email}
+                  onChange={(e) =>
+                    setInput({ ...input, email: e.target.value })
+                  }
+                />
+                <FieldDescription>
+                  We&apos;ll use this to contact you. We will not share your
+                  email with anyone else.
+                </FieldDescription>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={input.password}
+                  onChange={(e) =>
+                    setInput({ ...input, password: e.target.value })
+                  }
+                />
+                <FieldDescription>
+                  Must be at least 8 characters long.
+                </FieldDescription>
+              </Field>
+
+              <FieldGroup>
+                <Field>
+                   
+                        <Button type="submit" disabled={loading}>
+                          {loading ? <Loader2 className="animate-spin mr-2" /> : "Create Account"}
+                        </Button>
+        
+                  <FieldDescription className="px-6 text-center">
+                    Already have an account? <Link to="/login" className="text-blue-500 hover:underline">
+                      Login
+                    </Link>
+                  </FieldDescription>
+                </Field>
+              </FieldGroup>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
