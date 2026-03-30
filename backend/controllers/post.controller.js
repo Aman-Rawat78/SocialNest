@@ -2,9 +2,11 @@ import { Comment } from "../models/comment.model.js";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
 import cloudinary from "../utils/cloudinary.js";
+import sharp from "sharp";
 
 export const CreateNewPost = async (req, res) => {
     try {
+        console.log("in")
         const authorId = req.id;
         const { caption } = req.body;
        const image = req.file; // Assuming you're using multer for file uploads

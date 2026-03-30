@@ -1,81 +1,140 @@
-import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp, Video } from "lucide-react";
-import React from "react";
+import {
+  Heart,
+  Home,
+  Instagram,
+  LogOut,
+  MessageCircle,
+  PlusSquare,
+  Search,
+  TrendingUp,
+  Video,
+} from "lucide-react";
+import React, { useState } from "react";
 import {
   Avatar,
   AvatarBadge,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
-
-
-
-
-const sidebarItems = [
-  {
-    icon: <Home/>,
-    text: "Home",
-  },
-  {
-    icon: <Search/>,
-    text: "Search",
-  },
-  {
-    icon: <TrendingUp />,
-    text: "Explore",
-  },
-  {
-    icon: <Video />,
-    text: "Reels",
-  },
-  {
-    icon: <MessageCircle />,
-    text: "MessagesCircle",
-  },
-  {
-    icon: <Heart />,
-    text: "Notifications",
-  },
-  {
-    icon: <PlusSquare/>,
-    text: "Create",
-  },
-  {
-    icon: (
-    <Avatar>
-      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-      <AvatarFallback>CN</AvatarFallback>
-      <AvatarBadge className="bg-green-600 dark:bg-green-800" />
-    </Avatar>
-    ),
-    text: "Profile"
-  },
-  {
-    icon: <LogOut/>,
-    text: "logout"
-  }
-];
-// className="flex items-center z-10 left-0  px-4 gap-4 p-2 rounded-md border-r border-gray-300  hover:bg-gray-200 cursor-pointer"
+} from "@/components/ui/avatar";
+import axios from "axios";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "@/redux/authSlice";
+import CreatePost from "./CreatePost";
+import { FaS } from "react-icons/fa6";
 
 const LeftSidebar = () => {
-  return(
-     <div classname="fixed top-0 z-10 left-0 px-4 gap-4 py-4 border-r border-gray-300 w-[16%] h-screen">
-     <div>
-        <div>
-            {
-         sidebarItems.map((item,index)=>{
-            return(
-                <div key={index} >
-                    {item.icon}
-                <span>{item.text}</span>
-                </div>
-            )
-         })
-    }
-        </div>
-     </div>
+  const navigate = useNavigate();
+  const { user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
 
-  </div>
-  )
+  // Logout
+  const handleLogout = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/v1/user/logout", {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setAuthUser(null));
+        toast(res.data.message, { position: "top-center" });
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response.data.message || "Something went wrong");
+    }
+  };
+
+  const createPostHandler = () => {
+    setOpen(true)
+    try {
+    } catch (error) {}
+  };
+
+  const sidebarHandler = (textType) => {
+    // toast(text)
+    if (textType === "logout") {
+      handleLogout();
+    } else if (textType === "Create") {
+      createPostHandler();
+    }
+  };
+
+  const sidebarItems = [
+    {
+      icon: <Home />,
+      text: "Home",
+    },
+    {
+      icon: <Search />,
+      text: "Search",
+    },
+    {
+      icon: <TrendingUp />,
+      text: "Explore",
+    },
+    {
+      icon: <Video />,
+      text: "Reels",
+    },
+    {
+      icon: <MessageCircle />,
+      text: "Messages",
+    },
+    {
+      icon: <Heart />,
+      text: "Notifications",
+    },
+    {
+      icon: <PlusSquare />,
+      text: "Create",
+    },
+    {
+      icon: (
+        <Avatar>
+          <AvatarImage src={user?.avatar} alt={user?.username} />
+          <AvatarFallback>{user?.username?.charAt(0)}</AvatarFallback>
+          <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+        </Avatar>
+      ),
+      text: "Profile",
+    },
+    {
+      icon: <LogOut />,
+      text: "logout",
+    },
+  ];
+
+  return (
+    <div className=" px-4  border-r border-gray-300 w-[16%] h-screen">
+      <div className="flex flex-col">
+        <div className="flex items-center gap-2 my-4">
+          <Instagram className="text-2xl " />
+          <span className="text-xl font-bold">Instagram</span>
+        </div>
+        <div>
+          {sidebarItems.map((item, index) => {
+            return (
+              <div
+                onClick={() => sidebarHandler(item.text)}
+                key={index}
+                className="flex items-center gap-4 relative hover:bg-gray-100 cursor-pointer rounded-lg p-3 my-3"
+              >
+                {item.icon}
+                <span>{item.text}</span>
+              </div>
+            );
+          })}
+        </div>
+         <a href="https://example.com" >
+      Click me
+    </a>
+      </div>
+      <CreatePost open={open} setOpen={setOpen}/>
+    </div>
+  );
 };
 
 export default LeftSidebar;

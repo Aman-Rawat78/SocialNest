@@ -66,7 +66,7 @@ export const login = async (req, res) => {
     });
 
     //populate each post if in the posts arrays
-    const populatedPosts = await Promise.all(
+    const populatedPosts = (await Promise.all(
       user.posts.map(async (postId) => {
         const post = await Post.findById(postId);
         if(post.author.equals(user._id)){
@@ -74,7 +74,7 @@ export const login = async (req, res) => {
         }
         return null;
       })
-    ).filter(Boolean);  //removes all nulls
+    )).filter(Boolean);  //removes all nulls
 
     const userWithoutPassword = await User.findOne({ email }).select(
       "-password",

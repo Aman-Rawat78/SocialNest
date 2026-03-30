@@ -13,6 +13,8 @@ import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/redux/authSlice";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,6 +23,8 @@ export default function Login() {
     email: "",
     password: "",
   });
+
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -44,8 +48,10 @@ export default function Login() {
           email: "",
           password: "",
         });
-        console.log("Login successful");
+       
         toast.success(res.data.message, { position: "top-center" });
+        dispatch(setAuthUser(res.data.user));
+       
         
       } else {
         toast.error(res.data.message, { position: "top-center" });

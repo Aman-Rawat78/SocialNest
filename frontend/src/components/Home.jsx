@@ -1,9 +1,18 @@
 import React from 'react'
+import Feed from './ui/Feed'
+import { Outlet } from 'react-router-dom'
+import RightSidebar from './RightSidebar'
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
-
-export default Home
+    <div className='flex'>
+        <div className='grow'>
+          <Feed/>
+          <Outlet/>
+        </div>
+        <RightSidebar/>
+    </div>
+  ) 
+} 
+ 
+export default Home 
