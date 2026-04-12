@@ -58,7 +58,9 @@ export const login = async (req, res) => {
         .json({ message: "Incorrect email or password", success: false });
     }
 
-    const token =  jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {  expiresIn: "1d", });
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "strict",
@@ -66,15 +68,18 @@ export const login = async (req, res) => {
     });
 
     //populate each post if in the posts arrays
-    const populatedPosts = (await Promise.all(
-      user.posts.map(async (postId) => {
-        const post = await Post.findById(postId);
-        if(post.author.equals(user._id)){
-          return post;
-        }
-        return null;
-      })
-    )).filter(Boolean);  //removes all nulls
+    const populatedPosts = (
+      await Promise.all(
+        user.posts.map(async (postId) => {
+          const post = await Post.findById(postId);
+         
+          if (post && post.author && post.author.equals(user._id)) {
+            return post;
+          }
+          return null;
+        }),
+      )
+    ).filter(Boolean); //removes all nulls
 
     const userWithoutPassword = await User.findOne({ email }).select(
       "-password",
@@ -84,7 +89,7 @@ export const login = async (req, res) => {
     return res.status(200).json({
       message: `Welcome back ${user.username}`,
       success: true,
-      user: {...userData, posts: populatedPosts},
+      user: { ...userData, posts: populatedPosts },
     });
   } catch (error) {
     console.log(error);
@@ -136,7 +141,6 @@ export const editProfile = async (req, res) => {
         .json({ message: "User not found", success: false });
     }
     let cloudResponse;
-  
 
     if (profilePicture) {
       const fileUri = getDataUri(profilePicture);
@@ -162,9 +166,9 @@ export const editProfile = async (req, res) => {
 
     user.gender = gender || user.gender;
     user.bio = bio || user.bio;
-    
+
     await user.save();
-   
+
     return res
       .status(200)
       .json({ message: "Profile updated successfully", success: true, user });

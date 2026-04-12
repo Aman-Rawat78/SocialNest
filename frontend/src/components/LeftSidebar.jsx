@@ -22,13 +22,15 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
-import { FaS } from "react-icons/fa6";
+import { setPosts, setSelectedPost } from "@/redux/postSlice";
+
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+
 
   // Logout
   const handleLogout = async () => {
@@ -38,6 +40,8 @@ const LeftSidebar = () => {
       });
       if (res.data.success) {
         dispatch(setAuthUser(null));
+        dispatch(setPosts([]));
+        dispatch(setSelectedPost(null));
         toast(res.data.message, { position: "top-center" });
         navigate("/login");
       }
@@ -47,18 +51,14 @@ const LeftSidebar = () => {
     }
   };
 
-  const createPostHandler = () => {
-    setOpen(true)
-    try {
-    } catch (error) {}
-  };
+  
 
   const sidebarHandler = (textType) => {
     // toast(text)
     if (textType === "logout") {
       handleLogout();
     } else if (textType === "Create") {
-      createPostHandler();
+     setOpen(true)
     }
   };
 
@@ -128,9 +128,7 @@ const LeftSidebar = () => {
             );
           })}
         </div>
-         <a href="https://example.com" >
-      Click me
-    </a>
+        
       </div>
       <CreatePost open={open} setOpen={setOpen}/>
     </div>

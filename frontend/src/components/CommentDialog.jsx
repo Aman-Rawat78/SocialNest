@@ -1,12 +1,23 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts, setSelectedPost } from "@/redux/postSlice";
+import { toast } from "sonner";
 
-const CommentDialog = ({ open, setOpen }) => {
+const CommentDialog = ({ open, setOpen,comments }) => {
   const [text, setText] = useState("");
+  const { selectedPost, posts } = useSelector((store) => store.post);
+  const dispatch = useDispatch();
 
   const ChangeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -17,8 +28,35 @@ const CommentDialog = ({ open, setOpen }) => {
     }
   };
 
-  const sendMessageHandler = async (e) => {
-    alert(text);
+
+  // Handle add comment functionality here
+  const handleComment = async () => {
+    try {
+      const res = await axios.post(
+        `http://localhost:8000/api/v1/post/comments/${selectedPost?._id}`,
+        { text },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        },
+      );
+
+      if (res.data.success) {
+        const updatedPosts = posts.map((p) =>
+          p._id === selectedPost._id
+            ? { ...p, comments: [res.data.comment , ...p.comments] }
+            : p,
+        );
+
+        toast.success(res.data.message);
+        dispatch(setPosts(updatedPosts));
+        setText("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -28,6 +66,7 @@ const CommentDialog = ({ open, setOpen }) => {
         showCloseButton={false}
         onInteractOutside={() => setOpen(false)}
       >
+        <DialogTitle> </DialogTitle>
         <div className="flex h-150">
           {/* LEFT IMAGE */}
           <div className="w-1/2 bg-black">
@@ -45,12 +84,12 @@ const CommentDialog = ({ open, setOpen }) => {
             <div className="flex items-center justify-between p-4 border-b w-full">
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src="" />
+                  <AvatarImage src={selectedPost?.author?.profilePicture} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
 
                 <div className="flex justify-between">
-                  <Link className="font-semibold tex-1t-sm">username</Link>
+                  <Link className="font-semibold tex-1t-sm">{selectedPost?.author?.username}</Link>
                   {/* <p className="text-xs text-gray-500">Bio here...</p> */}
                 </div>
               </div>
@@ -88,27 +127,20 @@ const CommentDialog = ({ open, setOpen }) => {
             {/* COMMENTS SECTION */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {/* comment */}
-              <div className="flex gap-3">
-                <Avatar>
-                  <AvatarFallback>AB</AvatarFallback>
-                </Avatar>
-
-                <div>
-                  <span className="font-semibold text-sm">alex</span>
-                  <p className="text-sm">This is a beautiful picture 🔥</p>
+              {comments.map((comment) => (
+                <div className="flex gap-3" key={comment._id}>
+                  <Avatar>
+                    <AvatarImage src={comment?.author?.profilePicture} />
+                    <AvatarFallback>
+                      {comment?.author.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h1 className="font-bold text-sm">{comment?.author?.username} <span className="font-normal pl-1">{comment?.text}</span></h1>
+                    {/* <span className="font-semibold text-sm"> {comment?.author?.username}  </span> <p className="text-sm">{comment?.text}</p> */}
+                  </div>
                 </div>
-              </div>
-
-              <div className="flex gap-3">
-                <Avatar>
-                  <AvatarFallback>MK</AvatarFallback>
-                </Avatar>
-
-                <div>
-                  <span className="font-semibold text-sm">mike</span>
-                  <p className="text-sm">Amazing shot!</p>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* COMMENT INPUT */}
@@ -122,8 +154,8 @@ const CommentDialog = ({ open, setOpen }) => {
               />
               <Button
                 disabled={!text}
-                onClick={sendMessageHandler}
                 variant="outline"
+                onClick={handleComment}
               >
                 Send
               </Button>

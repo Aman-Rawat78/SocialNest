@@ -6,7 +6,6 @@ import sharp from "sharp";
 
 export const CreateNewPost = async (req, res) => {
     try {
-        console.log("in")
         const authorId = req.id;
         const { caption } = req.body;
        const image = req.file; // Assuming you're using multer for file uploads
@@ -84,7 +83,7 @@ export const getAllposts = async (req, res) => {
                     .populate({path:"author",select:"username profilePicture"})
                     .populate({
                         path:"comments",
-                        sort:{createdAt:-1},
+                        options: { sort: { createdAt: -1 } },
                         populate:{path:"author", select:"username profilePicture"}
                     })
 
@@ -136,6 +135,7 @@ export const unlikePost = async (req, res) => {
 
 export const addcomment = async(req,res)=>{
     try {
+         
         const postId = req.params.id;
         const { text } = req.body;
         if(!text){
@@ -146,11 +146,13 @@ export const addcomment = async(req,res)=>{
         if(!post){
             return res.status(404).json({ message: "Post not found", success: false });
         }
+
        const comment = await Comment.create({
             text,
             author:req.id,
             post:postId
-        }).populate({path:"author", select:"username profilePicture"});
+        })
+        await comment.populate({path:"author", select:"username profilePicture"});
        
         post.comments.push(comment._id);
         await post.save();
