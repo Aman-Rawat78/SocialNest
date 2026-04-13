@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { setPosts,setSelectedPost } from "@/redux/postSlice";
 import axios from "axios";
+import { Badge } from "./ui/badge";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -119,14 +120,15 @@ const Post = ({ post }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage
-              src={post?.author.profilePicture}
-              alt={post?.author.username}
-            />
+            <AvatarImage src={post?.author?.profilePicture } alt="post_img" />
             <AvatarFallback>CN</AvatarFallback>
             <AvatarBadge className="bg-green-600 dark:bg-green-800" />
           </Avatar>
-          <h1>{post?.author.username}</h1>
+          <div className="flex items-center gap-3">
+            <h1>{post?.author.username}</h1>
+          {user && user._id === post.author._id && ( <Badge variant="secondary">Author</Badge> )}
+          </div>
+          
         </div>
 
         {/* Post options dialog */}

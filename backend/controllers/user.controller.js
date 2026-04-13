@@ -112,7 +112,7 @@ export const logout = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId).select("-password").populate({path:'posts',options: { sort: { createdAt: -1 }}}).populate('bookmarks');
     if (!user) {
       return res
         .status(404)

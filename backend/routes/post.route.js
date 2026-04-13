@@ -1,5 +1,5 @@
 import express from 'express';
-import { CreateNewPost, deletePost,getAllposts,getUserPosts, getCommentsOfPost, likePost,dislikePost, addcomment,BookmarkPost } from '../controllers/post.controller.js';
+import { CreateNewPost, deletePost,getAllposts,getUserPosts, getCommentsOfPost, likePost,unlikePost, addcomment,BookmarkPost } from '../controllers/post.controller.js';
 import isAuthenticated from '../middlewares/isAuthenticated.js';
 import upload from '../middlewares/multer.js';
 
