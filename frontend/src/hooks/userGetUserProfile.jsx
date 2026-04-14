@@ -16,7 +16,6 @@ const useGetUserProfile = (userId) => {
             });
             if(res.data?.success){
                 dispatch(setUserProfile(res.data?.user));
-                console.log("User profile is set");
             }
         } catch (error) {
             console.error("Error fetching user profile:", error);

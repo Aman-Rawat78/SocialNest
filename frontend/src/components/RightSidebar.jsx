@@ -6,10 +6,11 @@ import SuggestedUsers from "./SuggestedUsers";
 
 const RightSidebar = () => {
   const {user} = useSelector((store) => store.auth);
+  console.log("User in right sidebar:", user);
   return (
     <div className="w-96 my-10 pr-32">
       <div className="flex items-center gap-2">
-        <Link to={`/profile/${user?.id}`}>
+        <Link to={`/profile/${user?._id}`}>
           <Avatar className="h-12 w-12" >
           <AvatarImage src={user?.profilePicture} alt="post_img" />
           <AvatarFallback>{user?.username.charAt(0).toUpperCase()}</AvatarFallback>
@@ -18,7 +19,7 @@ const RightSidebar = () => {
         </Link>
         
         <div>
-          <h1 to={`/profile/${user?.id}`} className="font-semibold text-sm"> {user?.username} </h1>
+          <h1 className="font-semibold text-sm"> <Link to={`/profile/${user?._id}`}>{user?.username}</Link> </h1>
           <span className="text-sm text-muted-foreground">
             {user?.bio || "Bio here..."}
           </span>

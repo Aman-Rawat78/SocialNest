@@ -159,7 +159,7 @@ export const editProfile = async (req, res) => {
       if (user.profilePicture) {
         const segments = user.profilePicture.split("/");
         const publicId = segments[segments.length - 1].split(".")[0];
-        return await cloudinary.uploader.destroy(`Instagram_Clone/${publicId}`);
+        await cloudinary.uploader.destroy(`Instagram_Clone/${publicId}`);
       }
       user.profilePicture = cloudResponse.secure_url;
     }

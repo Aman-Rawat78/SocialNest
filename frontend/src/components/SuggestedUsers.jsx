@@ -21,7 +21,7 @@ const SuggestedUsers = () => {
                                 <Link to={`/profile/${user?._id}`}>
                                     <Avatar className="h-12 w-12" >
                                         <AvatarImage src={user?.profilePicture} alt="post_image" />
-                                        <AvatarFallback>CN</AvatarFallback>
+                                        <AvatarFallback>{user?.username.charAt(0).toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                 </Link>
                                 <div>

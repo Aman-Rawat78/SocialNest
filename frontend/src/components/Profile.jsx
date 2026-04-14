@@ -14,13 +14,12 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState('posts');
 
   const { userProfile, user } = useSelector(store => store.auth);
-  console.log("User profile in profile component:", userProfile);
   const isLoggedInUserProfile = user?._id === userProfile?._id;
   const isFollowing = false;
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-  }
+  };
 
   const displayedPost = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks;
 
@@ -30,7 +29,7 @@ const Profile = () => {
         <div className='grid grid-cols-2'>
           <section className='flex items-center justify-center'>
             <Avatar className='h-32 w-32'>
-              <AvatarImage src={userProfile?.profilePicture} alt="profilephoto" />
+              <AvatarImage src={userProfile?.profilePicture || "img"} alt="profilephoto" />
               <AvatarFallback className='text-3xl'>{userProfile?.username.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
           </section>
