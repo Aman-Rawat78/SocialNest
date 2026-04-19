@@ -122,7 +122,7 @@ const Post = ({ post }) => {
           <Avatar>
             <AvatarImage src={post?.author?.profilePicture } alt="post_img" />
             <AvatarFallback>CN</AvatarFallback>
-            <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+            {/* <AvatarBadge className="bg-green-600 dark:bg-green-800" /> */}
           </Avatar>
           <div className="flex items-center gap-3">
             <h1>{post?.author.username}</h1>

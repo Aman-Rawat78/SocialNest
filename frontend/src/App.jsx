@@ -9,6 +9,7 @@ import React from "react";
 import { useNetworkStatus } from "./lib/useNetworkStatus";
 import { Offline, Online } from "./components/ui/internetStatus";
 import EditProfile from "./components/EditProfile";
+import ChatPage from "./components/ChatPage";
 
 const browserRouter = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const browserRouter = createBrowserRouter([
       {
         path: "/account/edit",
         element: <EditProfile />,
+      },
+      {
+        path: "/chat",
+        element: <ChatPage />,
       }
     ],
   },

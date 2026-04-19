@@ -63,7 +63,7 @@ const EditProfile = () => {
 
         } catch (error) {
             console.log(error);
-            toast.error(error.response.data.messasge);
+            toast.error(error.response.data.message);
         } finally{
             setLoading(false);
         }

@@ -22,7 +22,9 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
-import { setPosts, setSelectedPost } from "@/redux/postSlice";
+import { logout } from "@/redux/store";
+import { persistStore } from 'redux-persist';
+import store from '@/redux/store';
 
 
 const LeftSidebar = () => {
@@ -39,9 +41,9 @@ const LeftSidebar = () => {
         withCredentials: true,
       });
       if (res.data.success) {
-        dispatch(setAuthUser(null));
-        dispatch(setPosts([]));
-        dispatch(setSelectedPost(null));
+        dispatch(logout()); // resets all redux state
+        // Purge redux-persist storage
+        persistStore(store).purge();
         toast(res.data.message, { position: "top-center" });
         navigate("/login");
       }
@@ -51,7 +53,7 @@ const LeftSidebar = () => {
     }
   };
 
-  
+  console.log(user);
 
   const sidebarHandler = (textType) => {
     // toast(text)
@@ -63,6 +65,8 @@ const LeftSidebar = () => {
       navigate(`/profile/${user?._id}`);
     }else if(textType === "Home"){
       navigate("/");
+    }else if(textType === "Messages"){
+      navigate("/chat");  
     }
   };
 
@@ -98,7 +102,7 @@ const LeftSidebar = () => {
     {
       icon: (
         <Avatar>
-          <AvatarImage src={user?.avatar} alt={user?.username} />
+          <AvatarImage src={user?.profilePicture} alt={user?.username} />
           <AvatarFallback>{user?.username?.charAt(0)}</AvatarFallback>
           <AvatarBadge className="bg-green-600 dark:bg-green-800" />
         </Avatar>

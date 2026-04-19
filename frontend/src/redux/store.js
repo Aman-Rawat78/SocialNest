@@ -19,10 +19,20 @@ const persistConfig = {
   storage,
 };
 
-const rootReducer = combineReducers({
+
+// Root reducer with state reset on logout
+const appReducer = combineReducers({
   auth: authSlice,
   post: postSlice,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === "LOGOUT") {
+    // Clear all state
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -35,5 +45,8 @@ const store = configureStore({
       },
     }),
 });
+
+// Action creator for logout
+export const logout = () => ({ type: "LOGOUT" });
 
 export default store;
