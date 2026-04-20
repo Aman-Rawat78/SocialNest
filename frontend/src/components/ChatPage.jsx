@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { setSelectedUser } from "@/redux/authSlice";
 import { MessageCircleCode } from "lucide-react";
+import Messages from "./Messages";
 
 const ChatPage = () => {
   const { user, suggestedUsers, selectedUser } = useSelector(
@@ -12,10 +13,10 @@ const ChatPage = () => {
   const dispatch = useDispatch();
   return (
     <div>
-      <section>
+     <section className='w-full md:w-1/4 my-8'>
         <h1 className="font-bold m-4 px-3 text-xl">{user?.username}</h1>
         <hr className="mb-4 border-gray-300" />
-        <div className="overflow-y-auto h-[80vh">
+        <div className="overflow-y-auto h-[80vh]">
           {suggestedUsers.map((suggestedUser) => {
             // const isOnline = onlineUsers.includes(suggestedUser?._id);
             return (
@@ -51,6 +52,11 @@ const ChatPage = () => {
               <span>{selectedUser?.username}</span>
             </div>
           </div>
+          <Messages selectedUser={selectedUser} />
+                        {/* <div className='flex items-center p-4 border-t border-t-gray-300'>
+                            <Input value={textMessage} onChange={(e) => setTextMessage(e.target.value)} type="text" className='flex-1 mr-2 focus-visible:ring-transparent' placeholder="Messages..." />
+                            <Button onClick={() => sendMessageHandler(selectedUser?._id)}>Send</Button>
+                        </div> */}
         </section>
       ) : (
         <div className="flex flex-col items-center justify-center mx-auto">
