@@ -14,7 +14,7 @@ const io =  new Server(server, {
     }
 });
 
-const userSocketMap = {}
+const userSocketMap = {}  // This map stores socket id corresponding to each user id: userId -> socketId
 
 io.on("connection" , (socket) => {
     const userId = socket.handshake.query.userId;
@@ -25,7 +25,7 @@ io.on("connection" , (socket) => {
 
     io.emit("getOnlineUsers",Object.keys(userSocketMap));
 
-    socket.ion("disconnect", () => {
+    socket.on("disconnect", () => {
         if(userId){
             console.log(`User disconnected: UserId = ${userId}, SocketId = ${socket.id}`);
              delete userSocketMap[userId];

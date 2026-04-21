@@ -6,7 +6,7 @@ import SuggestedUsers from "./SuggestedUsers";
 
 const RightSidebar = () => {
   const {user} = useSelector((store) => store.auth);
-  console.log("User in right sidebar:", user);
+ 
   return (
     <div className="w-96 my-10 pr-32">
       <div className="flex items-center gap-2">

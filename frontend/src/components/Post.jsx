@@ -26,7 +26,7 @@ const Post = ({ post }) => {
   const [loading, setLoading] = useState(false);
   const [Liked, setLiked] = useState(post.likes.includes(user?._id));
   const [likesCount, setLikesCount] = useState(post.likes.length);
-
+ 
   const ChangeEventHandler = (e) => {
     const inputText = e.target.value;
     if (inputText.trim()) {
@@ -121,7 +121,7 @@ const Post = ({ post }) => {
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage src={post?.author?.profilePicture } alt="post_img" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{post?.author?.username?.charAt(0)?.toUpperCase()}</AvatarFallback>
             {/* <AvatarBadge className="bg-green-600 dark:bg-green-800" /> */}
           </Avatar>
           <div className="flex items-center gap-3">

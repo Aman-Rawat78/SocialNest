@@ -6,10 +6,9 @@ import { MessageCircleCode } from "lucide-react";
 import Messages from "./Messages";
 
 const ChatPage = () => {
-  const { user, suggestedUsers, selectedUser } = useSelector(
-    (store) => store.auth,
-  );
-  const isOnline = true; // Replace with actual online status logic
+  const { user, suggestedUsers, selectedUser } = useSelector( (store) => store.auth,);
+  const { onlineUsers } = useSelector((store) => store.chat);
+ 
   const dispatch = useDispatch();
   return (
     <div>
@@ -18,7 +17,7 @@ const ChatPage = () => {
         <hr className="mb-4 border-gray-300" />
         <div className="overflow-y-auto h-[80vh]">
           {suggestedUsers.map((suggestedUser) => {
-            // const isOnline = onlineUsers.includes(suggestedUser?._id);
+            const isOnline = onlineUsers.includes(suggestedUser?._id);
             return (
               <div
                 onClick={() => dispatch(setSelectedUser(suggestedUser))}
@@ -26,7 +25,7 @@ const ChatPage = () => {
               >
                 <Avatar className="w-14 h-14">
                   <AvatarImage src={suggestedUser?.profilePicture} />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>{suggestedUser?.username.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="font-medium">{suggestedUser?.username}</span>
@@ -46,7 +45,7 @@ const ChatPage = () => {
           <div className="flex gap-3 items-center px-3 py-2 border-b border-gray-300 sticky top-0 bg-white z-10">
             <Avatar>
               <AvatarImage src={selectedUser?.profilePicture} alt="profile" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>{selectedUser?.username.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <span>{selectedUser?.username}</span>

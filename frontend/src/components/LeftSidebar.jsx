@@ -33,7 +33,6 @@ const LeftSidebar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
-
   // Logout
   const handleLogout = async () => {
     try {
@@ -53,7 +52,7 @@ const LeftSidebar = () => {
     }
   };
 
-  console.log(user);
+
 
   const sidebarHandler = (textType) => {
     // toast(text)
