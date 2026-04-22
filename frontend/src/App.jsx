@@ -14,6 +14,7 @@ import { io } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
 import { setSocket } from "./redux/socketSlice";
 import { setOnlineUsers } from "./redux/chatSlice";
+import { setLikeNotification } from "./redux/RealtimeNotification";
 
 const browserRouter = createBrowserRouter([
   {
@@ -52,8 +53,9 @@ function App() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { isOnline, showBackOnline } = useNetworkStatus();
-  const {socket} = useSelector((state) => state.socketio);
+  const { socket } = useSelector((state) => state.socketio);
 
+ 
   useEffect(() => {
     if (user) {
       const socketio = io("http://localhost:8000", {
@@ -63,22 +65,32 @@ function App() {
         transports: ["websocket"],
       });
 
+//  socketio.on("connect", () => {
+//   console.log(socketio)
+//       console.log("Socket connected:", socketio.connected); // will be true
+//     });
+
+
       dispatch(setSocket(socketio));
 
       // Listen all the events related to socket connection
-        socketio.on("getOnlineUsers", (onlineUsers) => {
-          dispatch(setOnlineUsers(onlineUsers));
+      socketio.on("getOnlineUsers", (onlineUsers) => {
+        dispatch(setOnlineUsers(onlineUsers));
       });
+     
+       socketio.on("notification", (notification) => {
+         dispatch(setLikeNotification(notification));
+       });
 
-      return () =>{
+      return () => {
         socketio.close();
         dispatch(setSocket(null));
-      }
-    }else if(socket){
-       socket?.close();
+      };
+    } else if (socket) {
+      socket?.close();
       dispatch(setSocket(null));
     }
-  }, [user,dispatch]);
+  }, [user, dispatch]);
   return (
     <>
       {!isOnline && <Offline />}

@@ -25,6 +25,7 @@ import CreatePost from "./CreatePost";
 import { logout } from "@/redux/store";
 import { persistStore } from 'redux-persist';
 import store from '@/redux/store';
+import { Popover } from "radix-ui";
 
 
 const LeftSidebar = () => {
@@ -32,6 +33,7 @@ const LeftSidebar = () => {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const {likeNotification} = useSelector((store) => store.realtimeNotification);
 
   // Logout
   const handleLogout = async () => {
@@ -131,6 +133,18 @@ const LeftSidebar = () => {
               >
                 {item.icon}
                 <span>{item.text}</span>
+                {
+                  item.text == "Notifications" && likeNotification.length > 0 && (
+                    <Popover>
+                      <PopoverTrigger className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                        {likeNotification.length}
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <p>{likeNotification.length} new likes</p>
+                      </PopoverContent>
+                    </Popover>
+                  )
+                }
               </div>
             );
           })}

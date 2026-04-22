@@ -1,12 +1,14 @@
 import { Conversation } from "../models/coversation.model.js";
 import { Message } from "../models/message.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 
 export const sendMessage = async (req, res) => {
     try {
         const senderId = req.id;
         const receiverId = req.params.id;
-        const {message } = req.body;
+        const {textMessage : message } = req.body;
+      
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, receiverId] }
         });
@@ -23,11 +25,19 @@ export const sendMessage = async (req, res) => {
             receiverId,
             message
         });
+
        if(newMessage)  conversation.messages.push(newMessage._id);
         await conversation.save();
 
         //implement socket.io to send real-time messages
-
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("newMessage", {
+                senderId,
+                message
+            });
+        }
+     
         return res.status(200).json({    message: "Message sent successfully",  newMessage, success: true });
     } catch (error) {
         console.log("Error sending message:", error);
@@ -44,7 +54,8 @@ export const getMessages = async (req, res) => {
         const receiverId = req.params.id;
         const conversation = await Conversation.findOne({
             participants: { $all: [senderId, receiverId] }
-        });
+        }).populate("messages");
+        
         if (!conversation) {
             return res.status(200).json( {success:true, message:[] } );
         }
