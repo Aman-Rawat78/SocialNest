@@ -20,12 +20,12 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
 import { logout } from "@/redux/store";
 import { persistStore } from 'redux-persist';
 import store from '@/redux/store';
-import { Popover } from "radix-ui";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 
 const LeftSidebar = () => {
@@ -33,8 +33,8 @@ const LeftSidebar = () => {
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const {likeNotification} = useSelector((store) => store.realtimeNotification);
-
+  const { likeNotification } = useSelector((store) => store.realtimeNotification);
+  console.log("likeNotification", likeNotification);
   // Logout
   const handleLogout = async () => {
     try {
@@ -61,13 +61,13 @@ const LeftSidebar = () => {
     if (textType === "logout") {
       handleLogout();
     } else if (textType === "Create") {
-     setOpen(true)
-    }else if (textType === "Profile") {
+      setOpen(true)
+    } else if (textType === "Profile") {
       navigate(`/profile/${user?._id}`);
-    }else if(textType === "Home"){
+    } else if (textType === "Home") {
       navigate("/");
-    }else if(textType === "Messages"){
-      navigate("/chat");  
+    } else if (textType === "Messages") {
+      navigate("/chat");
     }
   };
 
@@ -133,14 +133,33 @@ const LeftSidebar = () => {
               >
                 {item.icon}
                 <span>{item.text}</span>
+
                 {
                   item.text == "Notifications" && likeNotification.length > 0 && (
                     <Popover>
-                      <PopoverTrigger className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                        {likeNotification.length}
+                      <PopoverTrigger asChild>
+                        <Button size="icon" className="rounded-full h-5 w-5 absolute bottom-6 left-6 bg-red-600 text-white p-0">
+                          {likeNotification.length}
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent>
-                        <p>{likeNotification.length} new likes</p>
+                        <div>
+                          {
+                            !likeNotification.length ? (<p>No new notification</p>) : (
+                              likeNotification.map((notification) => {
+                                return (
+                                  <div key={notification.userId} className='flex items-center gap-2 my-2'>
+                                    <Avatar>
+                                      <AvatarImage src={notification.userDetails?.profilePicture} />
+                                      <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
+                                    <p className='text-sm'><span className='font-bold'>{notification.userDetails?.username}</span> liked your post</p>
+                                  </div>
+                                )
+                              })
+                            )
+                          }
+                        </div>
                       </PopoverContent>
                     </Popover>
                   )
@@ -149,9 +168,9 @@ const LeftSidebar = () => {
             );
           })}
         </div>
-        
+
       </div>
-      <CreatePost open={open} setOpen={setOpen}/>
+      <CreatePost open={open} setOpen={setOpen} />
     </div>
   );
 };

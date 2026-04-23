@@ -9,13 +9,13 @@ const realtimeNotificationSlice = createSlice({
     setLikeNotification: (state, action) => {
         if(action.payload.type === "like") {
             state.likeNotification.push(action.payload);
-        }else if(action.payload.type === "unlike") {
+        }else if(action.payload.type === "Unlike") {
             state.likeNotification = state.likeNotification.filter(
-                (item) => item.userId !== action.payload.userId
+                (item) =>  !(item.postId === action.payload.postId && item.userId === action.payload.userId)
             );
         }
     },
-  },  
+  },   
 });
 
 export const { setLikeNotification } = realtimeNotificationSlice.actions;

@@ -146,7 +146,7 @@ export const likePost = async (req, res) => {
   try {
     const postId = req.params.id;
     const userId = req.id;
-    await Post.findByIdAndUpdate(
+    const post = await Post.findByIdAndUpdate(
       postId,
       { $addToSet: { likes: userId } },
       { new: true },
@@ -154,13 +154,16 @@ export const likePost = async (req, res) => {
 
     // Implement socket.io to send real-time like updates
     const user = await User.findById(userId).select("username profilePicture");
+
     const postOwnerId = post.author.toString();
+
+
     if (postOwnerId !== userId) {
       // Avoid sending like notification to yourself
       const notification = {
         type: "like",
         userId,
-        userDetailss:user,
+        userDetails:user,
         postId,
         message: `${user.username} liked your post`,
       }
@@ -183,9 +186,10 @@ export const likePost = async (req, res) => {
 
 export const unlikePost = async (req, res) => {
   try {
+  
     const postId = req.params.id;
     const userId = req.id;
-    await Post.findByIdAndUpdate(
+    const post = await Post.findByIdAndUpdate(
       postId,
       { $pull: { likes: userId } },
       { new: true },
@@ -199,7 +203,7 @@ export const unlikePost = async (req, res) => {
       const notification = {
         type: "Unlike",
         userId,
-        userDetailss:user,
+        userDetails:user,
         postId,
         message: `${user.username} unliked your post`,
       }
