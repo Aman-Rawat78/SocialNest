@@ -34,7 +34,6 @@ const LeftSidebar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { likeNotification } = useSelector((store) => store.realtimeNotification);
-  console.log("likeNotification", likeNotification);
   // Logout
   const handleLogout = async () => {
     try {

@@ -302,16 +302,16 @@ export const BookmarkPost = async (req, res) => {
     }
     const user = await User.findById(userId);
     if (user.bookmarks.includes(postId)) {
-      await User.findByIdAndUpdate(userId, { $pull: { bookmarks: postId } });
+     const user = await User.findByIdAndUpdate(userId, { $pull: { bookmarks: postId } });
       return res
         .status(200)
-        .json({ message: "Post unbookmarked successfully", success: true });
+        .json({ message: "Post unbookmarked successfully", success: true, isbookmarked: false });
     } else {
       user.bookmarks.push(postId);
       await user.save();
       return res
         .status(200)
-        .json({ message: "Post bookmarked successfully", success: true });
+        .json({ message: "Post bookmarked successfully", success: true ,isbookmarked: true});
     }
   } catch (error) {
     console.log("Error bookmarking post:", error);

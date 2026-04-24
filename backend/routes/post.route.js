@@ -13,5 +13,5 @@ router.route("/comments/:id").post(isAuthenticated, addcomment)
 router.route("/getAllposts").get(isAuthenticated, getAllposts)
 router.route("/getUserPosts/:id").get(isAuthenticated, getUserPosts)
 router.route("/getCommentsOfPost/:id").get(isAuthenticated, getCommentsOfPost)
-router.route("/BookmarkPost/:id").put(isAuthenticated, BookmarkPost)
+router.route("/BookmarkPost/:id").get(isAuthenticated, BookmarkPost)
 export default router;   

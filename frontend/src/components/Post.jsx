@@ -5,7 +5,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import { Bookmark, MessageCircle, MoreHorizontal, Send, Text } from "lucide-react";
+import { Bookmark, BookmarkCheck,MessageCircle, MoreHorizontal, Send, Text } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { FaHeart } from "react-icons/fa";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { setPosts,setSelectedPost } from "@/redux/postSlice";
 import axios from "axios";
 import { Badge } from "./ui/badge";
+import { setAuthUser } from "@/redux/authSlice";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -26,6 +27,7 @@ const Post = ({ post }) => {
   const [loading, setLoading] = useState(false);
   const [Liked, setLiked] = useState(post.likes.includes(user?._id));
   const [likesCount, setLikesCount] = useState(post.likes.length);
+  const isBookmarked = user?.bookmarks?.includes(post._id);
  
   const ChangeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -71,7 +73,10 @@ const Post = ({ post }) => {
       if (res.data.success) {
         const updatedLikes = Liked ? likesCount - 1 : likesCount + 1;
         setLikesCount(updatedLikes);
-        setLiked(!Liked);  // The confusion is because setLiked(!Liked) updates the state for the next render, not immediately. So, when you call setLiked(!Liked), it schedules an update to the Liked state, but the value of Liked won't change until the next render cycle. Therefore, when you check the value of Liked immediately after calling setLiked(!Liked), it still holds the old value, which is why you see the opposite of what you expect in the console.log statement.
+        setLiked(!Liked);  // The confusion is because setLiked(!Liked) updates the state for the next render, not immediately.
+        //  So, when you call setLiked(!Liked), it schedules an update to the Liked state, but the value of Liked won't change until the next render cycle.
+        //  Therefore, when you check the value of Liked immediately after calling setLiked(!Liked), it still holds the old value, 
+        // which is why you see the opposite of what you expect in the console.log statement.
 
         // updated the post likes in the redux store
         const updatedPosts = posts.map((p) => 
@@ -114,6 +119,31 @@ const Post = ({ post }) => {
     console.log(error);
    }
   };
+
+
+  // Handle bookmark functionality here
+  const handleBookMark = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8000/api/v1/post/BookmarkPost/${post._id}`, {
+        withCredentials: true,
+      });
+      console.log(res.data);
+      if(res.data.success){
+        toast.success(res.data.message);
+
+        if(res.data.isbookmarked === true){
+          dispatch(setAuthUser({...user, bookmarks : [...user.bookmarks, post._id]}));
+        }else{
+          dispatch(setAuthUser({...user, bookmarks : user.bookmarks.filter(id => id !== post._id)}));
+        }
+      }else{
+        toast.error(res.data.message || 'Failed to bookmark post');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   return (
     <div className="my-8 w-full max-w-sm mx-auto">
@@ -195,7 +225,13 @@ const Post = ({ post }) => {
           />
           <Send className="cursor-pointer hover:text-gray-600" />
         </div>
-        <Bookmark />
+        
+        {
+        isBookmarked ? (
+          <BookmarkCheck onClick={handleBookMark} className="cursor-pointer text-[#0e0f0f]" />
+        ) : (
+          <Bookmark onClick={handleBookMark} />
+        )}
       </div>
       <span className="font-medium block mb-2">{post.likes.length} likes</span>
       <p>
