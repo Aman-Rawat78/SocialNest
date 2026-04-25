@@ -5,6 +5,7 @@ import cloudinary from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 import { Post } from "../models/post.model.js";
 
+
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -72,7 +73,7 @@ export const login = async (req, res) => {
       await Promise.all(
         user.posts.map(async (postId) => {
           const post = await Post.findById(postId);
-         
+
           if (post && post.author && post.author.equals(user._id)) {
             return post;
           }
@@ -112,7 +113,7 @@ export const logout = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId).select("-password").populate({path:'posts',options: { sort: { createdAt: -1 }}}).populate('bookmarks');
+    const user = await User.findById(userId).select("-password").populate({ path: 'posts', options: { sort: { createdAt: -1 } } }).populate('bookmarks');
     if (!user) {
       return res
         .status(404)
@@ -216,23 +217,21 @@ export const followOrUnfollow = async (req, res) => {
     }
 
     const isFollowing = user.following.includes(followingUser);
+
     if (isFollowing) {
       user.following.pull(followingUser);
       targetUser.followers.pull(loggedUser);
       await user.save();
       await targetUser.save();
-      return res
-        .status(200)
-        .json({ message: "Unfollowed successfully", success: true });
+      return res.status(200).json({ message: "Unfollowed successfully", success: true ,action:"unfollow"});
     } else {
       user.following.push(followingUser);
       targetUser.followers.push(loggedUser);
       await user.save();
       await targetUser.save();
-      return res
-        .status(200)
-        .json({ message: "Followed successfully", success: true });
+      return res.status(200).json({ message: "Followed successfully", success: true ,action:"follow"});
     }
+
   } catch (error) {
     return res
       .status(500)

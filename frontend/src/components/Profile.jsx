@@ -6,16 +6,18 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
 import useGetUserProfile from '@/hooks/userGetUserProfile';
+import useFollowUser from '@/hooks/useFollowUser';
 
 const Profile = () => {
   const params = useParams();
   const userId = params.id;
   useGetUserProfile(userId);
+  const followUser = useFollowUser(userId);
   const [activeTab, setActiveTab] = useState('posts');
 
   const { userProfile, user } = useSelector(store => store.auth);
   const isLoggedInUserProfile = user?._id === userProfile?._id;
-  const isFollowing = false;
+  const isFollowing = user?.following?.includes(userId);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -47,11 +49,11 @@ const Profile = () => {
                   ) : (
                     isFollowing ? (
                       <>
-                        <Button variant='secondary' className='h-8'>Unfollow</Button>
+                        <Button onClick={followUser}  variant='secondary' className='h-8 cursor-pointer'>Unfollow</Button>
                         <Button variant='secondary' className='h-8'>Message</Button>
                       </>
-                    ) : (
-                      <Button className='bg-[#0095F6] hover:bg-[#3192d2] h-8'>Follow</Button>
+                    ) : ( 
+                      <Button onClick={followUser} className='bg-[#0095F6] cursor-pointer hover:bg-[#3192d2] h-8'>Follow</Button>
                     )
                   )
                 }
