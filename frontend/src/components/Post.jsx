@@ -18,6 +18,8 @@ import axios from "axios";
 import { Badge } from "./ui/badge";
 import { setAuthUser } from "@/redux/authSlice";
 import { Link } from "react-router-dom";
+import useFollowUser from "@/lib/useFollowUser";
+import followUser from "@/lib/useFollowUser";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -29,6 +31,7 @@ const Post = ({ post }) => {
   const [Liked, setLiked] = useState(post.likes.includes(user?._id));
   const [likesCount, setLikesCount] = useState(post.likes.length);
   const isBookmarked = user?.bookmarks?.includes(post._id);
+ 
 
   const ChangeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -161,47 +164,58 @@ const Post = ({ post }) => {
               {post?.author.username}
             </div>
           </Link>
-          
+
           {user && user._id === post.author._id && (<Badge variant="secondary">Author</Badge>)}
         </div>
+        <div className="flex items-center gap-5">
 
-        {/* Post options dialog */}
-        <Dialog>
-          <DialogTrigger asChild>
-            <MoreHorizontal className="cursor-pointer" />
-          </DialogTrigger>
-          <DialogContent className="flex flex-col items-center test-sm text-center">
-            <DialogTitle> </DialogTitle>
-            {post?.author._id !== user?._id && (
+          {
+            (user && user._id !== post.author._id) && (
+              <span onClick={()=>followUser(post?.author?._id ,user,dispatch)} className='text-[#3BADF8] text-xs font-bold cursor-pointer  hover:text-[#3495d6] hover:underline'>
+                {user?.following?.includes(post?.author?._id) ? 'Following' : 'Follow'}
+              </span>
+             )
+          }
+
+
+          {/* Post options dialog */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <MoreHorizontal className="cursor-pointer" />
+            </DialogTrigger>
+            <DialogContent className="flex flex-col items-center test-sm text-center">
+              <DialogTitle> </DialogTitle>
+              {post?.author._id !== user?._id && (
+                <Button
+                  variant="ghost"
+                  className="cursor-pointer w-fit text-[#ED4956] font-bold"
+                  type="button"
+                >
+                  Unfollow
+                </Button>
+              )}
               <Button
                 variant="ghost"
-                className="cursor-pointer w-fit text-[#ED4956] font-bold"
+                className="cursor-pointer w-fit font-bold"
                 type="button"
               >
-                Unfollow
+                Add to favorites
               </Button>
-            )}
-            <Button
-              variant="ghost"
-              className="cursor-pointer w-fit font-bold"
-              type="button"
-            >
-              Add to favorites
-            </Button>
 
-            {post?.author._id === user?._id && (
-              <Button
-                onClick={handleDeletePost}
-                variant="ghost"
-                className="cursor-pointer w-fit text-[#ED4956]"
-                type="button"
-                disabled={loading}
-              >
-                Delete
-              </Button>
-            )}
-          </DialogContent>
-        </Dialog>
+              {post?.author._id === user?._id && (
+                <Button
+                  onClick={handleDeletePost}
+                  variant="ghost"
+                  className="cursor-pointer w-fit text-[#ED4956]"
+                  type="button"
+                  disabled={loading}
+                >
+                  Delete
+                </Button>
+              )}
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Post image */}
