@@ -1,23 +1,24 @@
 import React, { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Link, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
 import useGetUserProfile from '@/hooks/userGetUserProfile';
-import useFollowUser from '@/hooks/useFollowUser';
+import useFollowUser from '@/lib/useFollowUser';
+import followUser from '@/lib/useFollowUser';
 
 const Profile = () => {
   const params = useParams();
   const userId = params.id;
   useGetUserProfile(userId);
-  const followUser = useFollowUser(userId);
   const [activeTab, setActiveTab] = useState('posts');
 
   const { userProfile, user } = useSelector(store => store.auth);
   const isLoggedInUserProfile = user?._id === userProfile?._id;
   const isFollowing = user?.following?.includes(userId);
+  const dispatch = useDispatch();
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -49,11 +50,11 @@ const Profile = () => {
                   ) : (
                     isFollowing ? (
                       <>
-                        <Button onClick={followUser}  variant='secondary' className='h-8 cursor-pointer'>Unfollow</Button>
+                        <Button onClick={() => followUser(userProfile?._id, user, dispatch,userProfile)}  variant='secondary' className='h-8 cursor-pointer'>Unfollow</Button>
                         <Button variant='secondary' className='h-8'>Message</Button>
                       </>
                     ) : ( 
-                      <Button onClick={followUser} className='bg-[#0095F6] cursor-pointer hover:bg-[#3192d2] h-8'>Follow</Button>
+                      <Button onClick={() => followUser(userProfile?._id, user, dispatch,userProfile)} className='bg-[#0095F6] cursor-pointer hover:bg-[#3192d2] h-8'>Follow</Button>
                     )
                   )
                 }
