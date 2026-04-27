@@ -57,7 +57,7 @@ const ChatPage = () => {
                 className="flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer"
               >
                 <Avatar className="w-14 h-14">
-                  <AvatarImage src={suggestedUser?.profilePicture} />
+                  <AvatarImage src={suggestedUser?.profilePicture || null} />
                   <AvatarFallback>
                     {suggestedUser?.username.charAt(0)}
                   </AvatarFallback>
@@ -80,12 +80,12 @@ const ChatPage = () => {
         <section className="flex-1 border-l border-l-gray-300 flex flex-col h-full">
           <div className="flex gap-3 items-center px-3 py-2 border-b border-gray-300 sticky top-0 bg-white z-10">
             <Avatar>
-              <AvatarImage src={selectedUser?.profilePicture} alt="profile" />
+              <AvatarImage src={(selectedUser?.profilePicture) || null} alt="profile" />
               <AvatarFallback>
-                {selectedUser?.username.charAt(0)}
+                {selectedUser?.username.charAt(0).toUpperCase()} 
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col">
+            <div className="flex flex-col"> 
               <span>{selectedUser?.username}</span>
             </div>
           </div>

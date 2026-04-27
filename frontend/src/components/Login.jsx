@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 
 export default function Login() {
@@ -23,8 +23,9 @@ export default function Login() {
     email: "",
     password: "",
   });
-
+  const {user} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -63,6 +64,12 @@ export default function Login() {
       setloading(false);
     }
   };
+
+   useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
   return (
     <div className="flex justify-center items-center min-h-screen">
       <form

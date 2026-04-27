@@ -18,7 +18,6 @@ import axios from "axios";
 import { Badge } from "./ui/badge";
 import { setAuthUser } from "@/redux/authSlice";
 import { Link } from "react-router-dom";
-import useFollowUser from "@/lib/useFollowUser";
 import followUser from "@/lib/useFollowUser";
 
 const Post = ({ post }) => {

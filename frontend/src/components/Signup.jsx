@@ -13,27 +13,29 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import axios from "axios";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function Signup({ ...props }) {
-   const navigate =useNavigate();
+  const navigate = useNavigate();
   const [loading, setloading] = useState(false)
   const [input, setInput] = useState({
     username: "",
     email: "",
     password: "",
   });
+  const { user } = useSelector((state) => state.auth);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setloading(true);
     console.log(input);
-    console.log("Signup form submitted");
+   
     try {
       const res = await axios.post(
         "http://localhost:8000/api/v1/user/register",
@@ -45,8 +47,8 @@ export default function Signup({ ...props }) {
           withCredentials: true,
         },
       );
-    
-      if(res.data.success){
+
+      if (res.data.success) {
         navigate("/login")
         setInput({
           username: "",
@@ -54,17 +56,22 @@ export default function Signup({ ...props }) {
           password: "",
         })
         console.log("Signup successful");
-        toast.success(res.data.message , { position: "top-center" });
+        toast.success(res.data.message, { position: "top-center" });
       } else {
         toast.error(res.data.message, { position: "top-center" });
       }
     } catch (error) {
       toast.error(error.response.data.message, { position: "top-center" });
-    }finally{
+    } finally {
       setloading(false);
-        }
+    }
   };
 
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
   return (
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-full max-w-md shadow-lg " {...props}>
@@ -125,11 +132,11 @@ export default function Signup({ ...props }) {
 
               <FieldGroup>
                 <Field>
-                   
-                        <Button type="submit" disabled={loading}>
-                          {loading ? <Loader2 className="animate-spin mr-2" /> : "Create Account"}
-                        </Button>
-        
+
+                  <Button type="submit" disabled={loading}>
+                    {loading ? <Loader2 className="animate-spin mr-2" /> : "Create Account"}
+                  </Button>
+
                   <FieldDescription className="px-6 text-center">
                     Already have an account? <Link to="/login" className="text-blue-500 hover:underline">
                       Login

@@ -12,30 +12,31 @@ import EditProfile from "./components/EditProfile";
 import ChatPage from "./components/ChatPage";
 import { io } from "socket.io-client";
 import { useDispatch, useSelector } from "react-redux";
-import { setSocket } from "./redux/socketSlice";
 import { setOnlineUsers } from "./redux/chatSlice";
 import { setLikeNotification } from "./redux/RealtimeNotification";
+import { useRef } from "react";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 const browserRouter = createBrowserRouter([
   {
     path: "/",
-    element: <Mainlayout />,
+    element:<ProtectedRoutes><Mainlayout /></ProtectedRoutes>,
     children: [
       {
         path: "/",
-        element: <Home />,
+        element:<ProtectedRoutes><Home /></ProtectedRoutes>,
       },
       {
         path: "/profile/:id",
-        element: <Profile />,
+        element: <ProtectedRoutes><Profile /></ProtectedRoutes>,
       },
       {
         path: "/account/edit",
-        element: <EditProfile />,
+        element: <ProtectedRoutes><EditProfile /></ProtectedRoutes>,
       },
       {
         path: "/chat",
-        element: <ChatPage />,
+        element: <ProtectedRoutes><ChatPage /></ProtectedRoutes>,
       },
     ],
   },
@@ -49,13 +50,13 @@ const browserRouter = createBrowserRouter([
   },
 ]);
 
+
 function App() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { isOnline, showBackOnline } = useNetworkStatus();
-  const { socket } = useSelector((state) => state.socketio);
+  const socketRef = useRef(null);
 
- 
   useEffect(() => {
     if (user) {
       const socketio = io("http://localhost:8000", {
@@ -64,33 +65,28 @@ function App() {
         },
         transports: ["websocket"],
       });
-
-//  socketio.on("connect", () => {
-//   console.log(socketio)
-//       console.log("Socket connected:", socketio.connected); // will be true
-//     });
-
-
-      dispatch(setSocket(socketio));
+      
+      socketRef.current = socketio;
 
       // Listen all the events related to socket connection
       socketio.on("getOnlineUsers", (onlineUsers) => {
         dispatch(setOnlineUsers(onlineUsers));
       });
      
-       socketio.on("notification", (notification) => {
-         dispatch(setLikeNotification(notification));
-       });
+      socketio.on("notification", (notification) => {
+        dispatch(setLikeNotification(notification));
+      });
 
       return () => {
         socketio.close();
-        dispatch(setSocket(null));
+        socketRef.current = null;
       };
-    } else if (socket) {
-      socket?.close();
-      dispatch(setSocket(null));
+    } else if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
     }
   }, [user, dispatch]);
+
   return (
     <>
       {!isOnline && <Offline />}

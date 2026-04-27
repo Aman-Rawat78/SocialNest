@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const useGetAllMessages = () => {
     const dispatch = useDispatch();
     const {selectedUser} = useSelector((store) => store.auth);
+    
  useEffect(()=>{
     const fetchAllMessages = async ()=>{
         try {
