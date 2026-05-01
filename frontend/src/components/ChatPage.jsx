@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import axios from "axios";
 import { setMessages } from "@/redux/chatSlice";
 import { toast } from "sonner";
+import Profile from "./Profile";
 
 const ChatPage = () => {
   const [textMessage, setTextMessage] = useState("");
@@ -16,6 +17,13 @@ const ChatPage = () => {
   const { onlineUsers, messages } = useSelector((store) => store.chat);
   
   const dispatch = useDispatch();
+
+  // const ProfileMessage = (selectedUser) => {
+  //      const dispatch = useDispatch();
+  //       dispatch(setSelectedUser(selectedUser));
+  //       return null;
+  // }
+  
 
   const sendMessageHandler = async (receiverId) => {
     try {
@@ -59,11 +67,11 @@ const ChatPage = () => {
                 <Avatar className="w-14 h-14">
                   <AvatarImage src={suggestedUser?.profilePicture || null} />
                   <AvatarFallback>
-                    {suggestedUser?.username.charAt(0)}
+                    {suggestedUser?.name?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <span className="font-medium">{suggestedUser?.username}</span>
+                  <span className="font-medium">{suggestedUser?.name}</span>
                   <span
                     className={`text-xs font-bold ${isOnline ? "text-green-600" : "text-red-600"} `}
                   >
@@ -82,11 +90,11 @@ const ChatPage = () => {
             <Avatar>
               <AvatarImage src={(selectedUser?.profilePicture) || null} alt="profile" />
               <AvatarFallback>
-                {selectedUser?.username.charAt(0).toUpperCase()} 
+                {selectedUser?.name?.charAt(0)?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col"> 
-              <span>{selectedUser?.username}</span>
+              <span>{selectedUser?.name}</span>
             </div>
           </div>
 
@@ -117,3 +125,4 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+

@@ -8,8 +8,8 @@ import { Post } from "../models/post.model.js";
 
 export const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
+    const { username, email, password ,name} = req.body;
+    if (!username || !email || !password || !name) {
       return res
         .status(401)
         .json({ message: "All fields are required", success: false });
@@ -25,7 +25,7 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create new user
-    await User.create({ username, email, password: hashedPassword });
+    await User.create({ username, email, name, password: hashedPassword });
     res
       .status(201)
       .json({ message: "User registered successfully", success: true });
@@ -131,7 +131,7 @@ export const getProfile = async (req, res) => {
 export const editProfile = async (req, res) => {
   try {
     const userId = req.id;
-    const { bio, gender } = req.body;
+    const { bio, gender ,name } = req.body;
     const profilePicture = req.file; // Assuming you're using multer for file uploads
 
     const user = await User.findById(userId).select("-password");
@@ -167,7 +167,7 @@ export const editProfile = async (req, res) => {
 
     user.gender = gender || user.gender;
     user.bio = bio || user.bio;
-
+    user.name = name || user.name;
     await user.save();
 
     return res

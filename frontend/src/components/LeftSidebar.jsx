@@ -120,7 +120,7 @@ const LeftSidebar = () => {
       <div className="flex flex-col">
         <div className="flex items-center gap-2 my-4">
           <Instagram className="text-2xl " />
-          <span className="text-xl font-bold">Instagram</span>
+          <span className="text-xl font-bold">SocialNest</span>
         </div>
         <div>
           {sidebarItems.map((item, index) => {

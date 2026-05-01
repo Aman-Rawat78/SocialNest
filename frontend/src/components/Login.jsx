@@ -110,7 +110,7 @@ export default function Login() {
           </Field>
           <Field>
             <Button type="submit" disabled={loading}>
-              {loading ?  <Loader2 className="animate-spin mr-2" /> :  "Create Account"  }
+              {loading ?  <Loader2 className="animate-spin mr-2" /> :  "Log in"  }
             </Button>
           </Field>
           <Field>

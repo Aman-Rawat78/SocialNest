@@ -9,6 +9,7 @@ import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { setAuthUser } from '@/redux/authSlice';
+import { Input } from './ui/input';
 
 const EditProfile = () => {
     const imageRef = useRef();
@@ -17,7 +18,8 @@ const EditProfile = () => {
     const [input, setInput] = useState({
         profilePicture: user?.profilePicture,
         bio: user?.bio,
-        gender: user?.gender
+        gender: user?.gender,
+        name: user?.name
     });
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -37,6 +39,7 @@ const EditProfile = () => {
         const formData = new FormData();
         formData.append("bio", input.bio);
         formData.append("gender", input.gender);
+        formData.append("name", input.name);
         if(input.profilePicture){
             formData.append("profilePicture", input.profilePicture);
         }
@@ -85,6 +88,11 @@ const EditProfile = () => {
                     </div>
                     <input ref={imageRef} onChange={fileChangeHandler} type='file' className='hidden' />
                     <Button onClick={() => imageRef?.current.click()} className='bg-[#0095F6] h-8 hover:bg-[#318bc7]'>Change photo</Button>
+                </div>
+                <div>
+                    
+                    <h1 className='font-bold text-xl mb-2'>Full Name</h1>
+                    <Input value={input.name} onChange={(e) => setInput({ ...input, name: e.target.value })} name='name' className="focus-visible:ring-transparent" />
                 </div>
                 <div>
                     <h1 className='font-bold text-xl mb-2'>Bio</h1>

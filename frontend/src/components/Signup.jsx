@@ -26,16 +26,17 @@ export default function Signup({ ...props }) {
   const [loading, setloading] = useState(false)
   const [input, setInput] = useState({
     username: "",
+    name:"",
     email: "",
     password: "",
   });
   const { user } = useSelector((state) => state.auth);
 
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setloading(true);
     console.log(input);
-   
     try {
       const res = await axios.post(
         "http://localhost:8000/api/v1/user/register",
@@ -52,6 +53,7 @@ export default function Signup({ ...props }) {
         navigate("/login")
         setInput({
           username: "",
+          name:"",
           email: "",
           password: "",
         })
@@ -90,6 +92,19 @@ export default function Signup({ ...props }) {
                   id="name"
                   type="text"
                   placeholder="John Doe"
+                  required
+                  value={input.name}
+                  onChange={(e) =>
+                    setInput({ ...input, name: e.target.value })
+                  }
+                />
+              </Field>
+               <Field>
+                <FieldLabel htmlFor="name">Username</FieldLabel>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Username"
                   required
                   value={input.username}
                   onChange={(e) =>

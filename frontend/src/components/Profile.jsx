@@ -25,9 +25,12 @@ const Profile = () => {
   };
 
   const displayedPost = activeTab === 'posts' ? userProfile?.posts : userProfile?.bookmarks;
-// In Profile.jsx
+
+
 const handleMessage = () => {
-  dispatch(setSelectedUser({ ...userProfile }));
+ setTimeout(() => {
+    dispatch(setSelectedUser(userProfile));
+  }, 100);
   navigate('/chat');
 };
   return (
@@ -43,7 +46,7 @@ const handleMessage = () => {
           <section>
             <div className='flex flex-col gap-5'>
               <div className='flex items-center gap-2'>
-                <span>{userProfile?.username}</span>
+                <span className='font-bold'>{userProfile?.username}</span>
                 {
                   isLoggedInUserProfile ? (
                     <>
@@ -64,6 +67,7 @@ const handleMessage = () => {
                   )
                 }
               </div>
+              <span className=''>{userProfile?.name || 'Name here...'}</span>
               <div className='flex items-center gap-4'>
                 <p><span className='font-semibold'>{userProfile?.posts?.length} </span>posts</p>
                 <p><span className='font-semibold'>{userProfile?.followers?.length} </span>followers</p>
