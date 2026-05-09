@@ -26,6 +26,7 @@ import { persistStore } from 'redux-persist';
 import store from '@/redux/store';
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import SearchSidebar from "./SearchSidebar";
 
 
 const LeftSidebar = () => {
@@ -34,6 +35,7 @@ const LeftSidebar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { likeNotification } = useSelector((store) => store.realtimeNotification);
+  const [showSearchBar, setShowSearchBar] = useState(false);
   // Logout
   const handleLogout = async () => {
     try {
@@ -67,6 +69,8 @@ const LeftSidebar = () => {
       navigate("/");
     } else if (textType === "Messages") {
       navigate("/chat");
+    }else if(textType === "Search"){
+     navigate("/search");
     }
   };
 
@@ -150,7 +154,7 @@ const LeftSidebar = () => {
                                   <div key={notification.userId} className='flex items-center gap-2 my-2'>
                                     <Avatar>
                                       <AvatarImage src={notification.userDetails?.profilePicture} />
-                                      <AvatarFallback>CN</AvatarFallback>
+                                      <AvatarFallback>{notification.userDetails?.name?.charAt(0)?.toUpperCase()}</AvatarFallback>
                                     </Avatar>
                                     <p className='text-sm'><span className='font-bold'>{notification.userDetails?.username}</span> liked your post</p>
                                   </div>

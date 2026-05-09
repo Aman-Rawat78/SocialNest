@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom'
 import RightSidebar from './RightSidebar'
 import useGetAllPost from '@/hooks/useGetAllPost'
 import useGetSuggestedUsers from '@/hooks/useGetSuggestedUser'
+import SearchSidebar from './SearchSidebar'
 
 const Home = () => {
   useGetAllPost();
@@ -15,7 +16,8 @@ const Home = () => {
           <Feed/>
           <Outlet/>
         </div>
-        <RightSidebar/>
+        {/* <RightSidebar/> */}
+        <SearchSidebar/>
     </div>
   ) 
 } 

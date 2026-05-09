@@ -16,6 +16,7 @@ import { setOnlineUsers } from "./redux/chatSlice";
 import { setLikeNotification } from "./redux/RealtimeNotification";
 import { useRef } from "react";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import SearchSidebar from "./components/SearchSidebar";
 
 const browserRouter = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const browserRouter = createBrowserRouter([
         path: "/chat",
         element: <ProtectedRoutes><ChatPage /></ProtectedRoutes>,
       },
+      {
+        path: "/search",
+        element: <ProtectedRoutes><SearchSidebar /></ProtectedRoutes>,
+      }
     ],
   },
   {

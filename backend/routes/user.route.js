@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, logout, getProfile, editProfile,Suggested,followOrUnfollow} from '../controllers/user.controller.js';
+import { register, login, logout, getProfile, editProfile,Suggested,followOrUnfollow, searchUsers} from '../controllers/user.controller.js';
 import isAuthenticated from '../middlewares/isAuthenticated.js';
 import upload from '../middlewares/multer.js';
 const router = express.Router();
@@ -12,5 +12,6 @@ router.route("/profile/:id").get(isAuthenticated, getProfile);
 router.route("/profile/edit").post(isAuthenticated,upload.single("profilePicture"), editProfile);
 router.route('/suggested').get(isAuthenticated, Suggested);
 router.route('/followOrUnfollow/:id').get(isAuthenticated, followOrUnfollow);
+router.route("/search").get( searchUsers);           //api/v1/user/search?query=${search}`
 
 export default router;

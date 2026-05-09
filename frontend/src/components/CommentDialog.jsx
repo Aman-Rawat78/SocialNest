@@ -137,7 +137,6 @@ const CommentDialog = ({ open, setOpen,comments }) => {
                   </Avatar>
                   <div>
                     <h1 className="font-bold text-sm">{comment?.author?.username} <span className="font-normal pl-1">{comment?.text}</span></h1>
-                    {/* <span className="font-semibold text-sm"> {comment?.author?.username}  </span> <p className="text-sm">{comment?.text}</p> */}
                   </div>
                 </div>
               ))}

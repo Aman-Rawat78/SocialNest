@@ -238,3 +238,18 @@ export const followOrUnfollow = async (req, res) => {
       .json({ message: "Internal server error", success: false });
   }
 };
+
+
+export const searchUsers = async (req, res) => {
+  const { query } = req.query; // 'query' can be username or name
+  if (!query) return res.json({ users: [] });
+
+  const users = await User.find({
+    $or: [
+      { username: { $regex: query, $options: "i" } },
+      { name: { $regex: query, $options: "i" } }
+    ]
+  }).limit(5); // limit for performance
+ console.log(users);
+  res.json({ users });
+};
