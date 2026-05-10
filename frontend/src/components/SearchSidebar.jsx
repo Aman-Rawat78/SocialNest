@@ -13,20 +13,21 @@ import { IoIosClose } from "react-icons/io";
 
 const SearchSidebar = ({ open, onClose }) => {
   const [search, setSearch] = useState("");
-  const [results, setResults] = useState([{_id: "1", username: "Aman", name: "Aman Singh" },{_id: "2", username: "JohnDoe", name: "John Doe" },{_id: "3", username: "JaneSmith", name: "Jane Smith" },{_id: "4", username: "MikeBrown", name: "Mike Brown" },{_id: "5", username: "EmilyDavis", name: "Emily Davis" },{_id: "6", username: "DavidWilson", name: "David Wilson" },{_id: "7", username: "SarahMiller", name: "Sarah Miller" },{_id: "8", username: "ChrisTaylor", name: "Chris Taylor" },{_id: "9", username: "JessicaAnderson", name: "Jessica Anderson" }]);
+  const [results, setResults] = useState([]);
+  useEffect(() => {
+    if (search.trim()) {
 
-  // useEffect(() => {
-  //   if (search.trim()) {
-  //     const timeout = setTimeout(() => {
-  //       axios.get(`/api/v1/user/search?query=${search}`)
-  //         .then(res => setResults(res.data.users || []));
-  //     }, 300);
-  //     return () => clearTimeout(timeout);
-  //   } else {
-  //     setResults([]);
-  //   }
-  // }, [search]);
-  console.log(results);
+      const timeout = setTimeout(() => {
+        axios.get(`http://localhost:8000/api/v1/user/search?query=${search}`)
+          .then(res => {setResults(res.data.users || [])});
+      }, 300);
+      return () => clearTimeout(timeout); 
+
+    } else {
+      setResults([]);
+    }
+  }, [search]);
+  // console.log(results);
   // if (!open) return null;
 
   return (
