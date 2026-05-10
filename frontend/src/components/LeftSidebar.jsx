@@ -26,10 +26,10 @@ import { persistStore } from 'redux-persist';
 import store from '@/redux/store';
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import SearchSidebar from "./SearchSidebar";
 
 
-const LeftSidebar = () => {
+
+const LeftSidebar = ({ onSearch }) => {
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
@@ -70,7 +70,7 @@ const LeftSidebar = () => {
     } else if (textType === "Messages") {
       navigate("/chat");
     }else if(textType === "Search"){
-     navigate("/search");
+      onSearch();
     }
   };
 

@@ -1,14 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import LeftSidebar from './LeftSidebar'
 
-
-import RightSidebar from './RightSidebar';
+import SearchSidebar from './SearchSidebar';
 
 const Mainlayout = () => {
+  const [isSearchActive, setSearchActive] = useState(false);
+  console.log(isSearchActive);
+
+  const handleSearchToggle = () => {
+    setSearchActive(!isSearchActive);
+  }
   return (
     <div className="flex min-h-screen">
-      <LeftSidebar />
+      {
+        isSearchActive ? <SearchSidebar onClose={handleSearchToggle} /> : <LeftSidebar  onSearch={handleSearchToggle}/>
+        
+      }
+      
       <div className="flex-1 flex flex-col">
         <Outlet />
       </div>
