@@ -1,5 +1,5 @@
 import { setAuthUser, setUserProfile } from '@/redux/authSlice';
-import axios from 'axios'
+import api from '@/lib/api'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
@@ -7,10 +7,8 @@ import { toast } from 'sonner';
 
 const followUser = async(FollowId,user,dispatch,userProfile) => {
     try {
-      console.log("insidethe handleFollow function, FollowId:", FollowId);
-      const res = await axios.get(`http://localhost:8000/api/v1/user/followOrUnfollow/${FollowId}`, {
-        withCredentials: true,
-      });
+      // console.log("insidethe handleFollow function, FollowId:", FollowId);
+      const res = await api.get(`/user/followOrUnfollow/${FollowId}`);
       if (res.data.success) {
         if (res.data.action === 'follow') {
           dispatch(setAuthUser({ ...user, following: [...user.following, FollowId] }));

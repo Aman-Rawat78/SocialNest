@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { use, useEffect, useState } from "react";
-import axios from "axios";
+import api from "@/lib/api";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,14 +32,13 @@ export default function Login() {
     console.log(input);
     setloading(true);
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/v1/user/login",
+      const res = await api.post(
+        "/user/login",
         input,
         {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         },
       );
 

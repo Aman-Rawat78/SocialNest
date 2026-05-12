@@ -16,7 +16,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import axios from "axios";
+import api from "@/lib/api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,13 +35,12 @@ const LeftSidebar = ({ onSearch }) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { likeNotification } = useSelector((store) => store.realtimeNotification);
-  const [showSearchBar, setShowSearchBar] = useState(false);
+
+  
   // Logout
   const handleLogout = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/user/logout", {
-        withCredentials: true,
-      });
+      const res = await api.get("/user/logout");
       if (res.data.success) {
         dispatch(logout()); // resets all redux state
         // Purge redux-persist storage
@@ -60,7 +59,7 @@ const LeftSidebar = ({ onSearch }) => {
   const sidebarHandler = (textType) => {
     // toast(text)
     if (textType === "logout") {
-      handleLogout();
+      handleLogout()
     } else if (textType === "Create") {
       setOpen(true)
     } else if (textType === "Profile") {

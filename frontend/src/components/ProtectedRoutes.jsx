@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 const ProtectedRoutes = ({ children }) => {
 const {user} = useSelector((state) => state.auth);
+
 const navigate = useNavigate();
 useEffect(() => {
     if(!user){
         navigate('/login');
     }
    
-},[])
+},[user])
   return <>{children}</>
 }
 

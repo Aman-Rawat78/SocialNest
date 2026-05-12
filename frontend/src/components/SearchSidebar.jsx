@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "@/lib/api";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { IoIosCloseCircle } from "react-icons/io";
@@ -18,7 +18,7 @@ const SearchSidebar = ({ onClose }) => {
     if (search.trim()) {
 
       const timeout = setTimeout(() => {
-        axios.get(`http://localhost:8000/api/v1/user/search?query=${search}`)
+        api.get(`/user/search?query=${search}`)
           .then(res => { setResults(res.data.users || []) });
       }, 300);
       return () => clearTimeout(timeout);

@@ -1,3 +1,4 @@
+import store, { logout } from "@/redux/store";
 import axios from "axios";
 
 const api = axios.create({
@@ -12,7 +13,9 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // Logout logic here
       localStorage.removeItem("token"); // Or your token key
-      window.location.href = "/login"; // Redirect to login
+      store.dispatch(logout());
+      // Optionally, redirect:
+      // window.location.href = "/login";
     }
     return Promise.reject(error);
   }

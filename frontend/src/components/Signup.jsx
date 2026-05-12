@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 
-import axios from "axios";
+import api from "@/lib/api";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -38,14 +38,13 @@ export default function Signup({ ...props }) {
     setloading(true);
     console.log(input);
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/v1/user/register",
+      const res = await api.post(
+        "/user/register",
         input,
         {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         },
       );
 

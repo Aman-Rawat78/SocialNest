@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/avatar";
 import { Bookmark, BookmarkCheck, MessageCircle, MoreHorizontal, Send, Text } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "./ui/button";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
@@ -14,7 +15,7 @@ import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
-import axios from "axios";
+import api from "@/lib/api";
 import { Badge } from "./ui/badge";
 import { setAuthUser } from "@/redux/authSlice";
 import { Link } from "react-router-dom";
@@ -30,7 +31,7 @@ const Post = ({ post }) => {
   const [Liked, setLiked] = useState(post.likes.includes(user?._id));
   const [likesCount, setLikesCount] = useState(post.likes.length);
   const isBookmarked = user?.bookmarks?.includes(post._id);
- 
+
 
   const ChangeEventHandler = (e) => {
     const inputText = e.target.value;
@@ -47,9 +48,7 @@ const Post = ({ post }) => {
     // Implement delete post functionality here
     setLoading(true);
     try {
-      const res = await axios.delete(`http://localhost:8000/api/v1/post/delete/${post._id}`, {
-        withCredentials: true,
-      });
+      const res = await api.delete(`/post/delete/${post._id}`);
       if (res.data.success) {
         const updatedPosts = posts.filter((p) => p._id !== post._id);
         dispatch(setPosts(updatedPosts));
@@ -69,9 +68,7 @@ const Post = ({ post }) => {
     try {
       const action = Liked ? 'unlike' : 'like';
 
-      const res = await axios.put(`http://localhost:8000/api/v1/post/${action}/${post._id}`, {}, {
-        withCredentials: true,
-      });
+      const res = await api.put(`/post/${action}/${post._id}`);
 
       if (res.data.success) {
         const updatedLikes = Liked ? likesCount - 1 : likesCount + 1;
@@ -102,11 +99,10 @@ const Post = ({ post }) => {
   const handleComment = async () => {
     try {
 
-      const res = await axios.post(`http://localhost:8000/api/v1/post/comments/${post._id}`, { text }, {
+      const res = await api.post(`/post/comments/${post._id}`, { text }, {
         headers: {
           'Content-Type': 'application/json'
         },
-        withCredentials: true,
       });
 
       if (res.data.success) {
@@ -127,9 +123,7 @@ const Post = ({ post }) => {
   // Handle bookmark functionality here
   const handleBookMark = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/v1/post/BookmarkPost/${post._id}`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`/post/BookmarkPost/${post._id}`);
       console.log(res.data);
       if (res.data.success) {
         toast.success(res.data.message);
@@ -170,10 +164,10 @@ const Post = ({ post }) => {
 
           {
             (user && user._id !== post.author._id) && (
-              <span onClick={()=>followUser(post?.author?._id ,user,dispatch)} className='text-[#3BADF8] text-xs font-bold cursor-pointer  hover:text-[#3495d6] hover:underline'>
+              <span onClick={() => followUser(post?.author?._id, user, dispatch)} className='text-[#3BADF8] text-xs font-bold cursor-pointer  hover:text-[#3495d6] hover:underline'>
                 {user?.following?.includes(post?.author?._id) ? 'Following' : 'Follow'}
               </span>
-             )
+            )
           }
 
 
@@ -183,7 +177,9 @@ const Post = ({ post }) => {
               <MoreHorizontal className="cursor-pointer" />
             </DialogTrigger>
             <DialogContent className="flex flex-col items-center test-sm text-center">
-              <DialogTitle> </DialogTitle>
+              <DialogTitle>
+                <VisuallyHidden>Post Options</VisuallyHidden>
+              </DialogTitle>
               {post?.author._id !== user?._id && (
                 <Button
                   variant="ghost"

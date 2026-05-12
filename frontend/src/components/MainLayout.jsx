@@ -6,7 +6,6 @@ import SearchSidebar from './SearchSidebar';
 
 const Mainlayout = () => {
   const [isSearchActive, setSearchActive] = useState(false);
-  console.log(isSearchActive);
 
   const handleSearchToggle = () => {
     setSearchActive(!isSearchActive);

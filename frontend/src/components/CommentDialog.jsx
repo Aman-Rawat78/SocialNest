@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
-import axios from "axios";
+import api from "@/lib/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts, setSelectedPost } from "@/redux/postSlice";
 import { toast } from "sonner";
 
-const CommentDialog = ({ open, setOpen,comments }) => {
+const CommentDialog = ({ open, setOpen, comments }) => {
   const [text, setText] = useState("");
   const { selectedPost, posts } = useSelector((store) => store.post);
   const dispatch = useDispatch();
@@ -28,25 +30,23 @@ const CommentDialog = ({ open, setOpen,comments }) => {
     }
   };
 
-
   // Handle add comment functionality here
   const handleComment = async () => {
     try {
-      const res = await axios.post(
-        `http://localhost:8000/api/v1/post/comments/${selectedPost?._id}`,
+      const res = await api.post(
+        `/post/comments/${selectedPost?._id}`,
         { text },
         {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         },
       );
 
       if (res.data.success) {
         const updatedPosts = posts.map((p) =>
           p._id === selectedPost._id
-            ? { ...p, comments: [res.data.comment , ...p.comments] }
+            ? { ...p, comments: [res.data.comment, ...p.comments] }
             : p,
         );
 
@@ -66,7 +66,14 @@ const CommentDialog = ({ open, setOpen,comments }) => {
         showCloseButton={false}
         onInteractOutside={() => setOpen(false)}
       >
-        <DialogTitle> </DialogTitle>
+        <DialogTitle>
+          <VisuallyHidden>Post Options</VisuallyHidden>
+        </DialogTitle>
+        <DialogDescription>
+          <VisuallyHidden>
+            Details about this dialog for screen readers.
+          </VisuallyHidden>
+        </DialogDescription>
         <div className="flex h-150">
           {/* LEFT IMAGE */}
           <div className="w-1/2 bg-black">
@@ -89,7 +96,9 @@ const CommentDialog = ({ open, setOpen,comments }) => {
                 </Avatar>
 
                 <div className="flex justify-between">
-                  <Link className="font-semibold tex-1t-sm">{selectedPost?.author?.username}</Link>
+                  <Link className="font-semibold tex-1t-sm">
+                    {selectedPost?.author?.username}
+                  </Link>
                   {/* <p className="text-xs text-gray-500">Bio here...</p> */}
                 </div>
               </div>
@@ -136,7 +145,10 @@ const CommentDialog = ({ open, setOpen,comments }) => {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h1 className="font-bold text-sm">{comment?.author?.username} <span className="font-normal pl-1">{comment?.text}</span></h1>
+                    <h1 className="font-bold text-sm">
+                      {comment?.author?.username}{" "}
+                      <span className="font-normal pl-1">{comment?.text}</span>
+                    </h1>
                   </div>
                 </div>
               ))}
